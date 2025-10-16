@@ -104,7 +104,7 @@ export default function QuizDivertido() {
       <div className="w-full max-w-3xl">
         {/* Header */}
         <header className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Quiz Divertido</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Quiz Divertido - Perdix</h1>
           <div className="flex items-center gap-2 text-sm">
             <label className="inline-flex items-center gap-2 cursor-pointer select-none">
               <input
