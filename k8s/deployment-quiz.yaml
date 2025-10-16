@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: quiz
-          image: perdixcloud/quiz-divertido:latest
+          image: perdixcloud/quiz-divertido:707e237
           ports:
             - containerPort: 3000
 
