@@ -43,7 +43,7 @@ jobs:
         run: |
           cd kubernetes/k8s
           # Supondo que seu YAML tenha algo como "image: user/quiz-divertido:..."
-          sed -i "s#\(image: .*/quiz-divertido:\).*#\1${{ env.TAG }}#" deployment.yaml
+          sed -i "s#\(image: .*/quiz-divertido:\).*#\1${{ env.TAG }}#" deployment-quiz.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
