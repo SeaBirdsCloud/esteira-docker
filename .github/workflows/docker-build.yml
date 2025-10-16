@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build, Push and Update Manifest
 
 on:
   push:
     branches:
-      - main  # ou o nome da branch que você usa
+      - main
 
 jobs:
   build:
@@ -13,15 +13,39 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Definir variáveis
+        id: vars
+        run: echo "TAG=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+
       - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build e Push da imagem
+      - name: Build e Push da imagem Docker
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/quiz-divertido:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/quiz-divertido:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/quiz-divertido:${{ env.TAG }}
+
+      # Atualizar manifesto na branch kubernetes
+      - name: Checkout da branch kubernetes
+        uses: actions/checkout@v4
+        with:
+          ref: kubernetes
+          path: kubernetes
+
+      - name: Atualizar manifesto
+        run: |
+          cd kubernetes/k8s
+          # Supondo que seu YAML tenha algo como "image: user/quiz-divertido:..."
+          sed -i "s#\(image: .*/quiz-divertido:\).*#\1${{ env.TAG }}#" deployment.yaml
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Atualiza imagem para tag ${{ env.TAG }}"
+          git push origin kubernetes
